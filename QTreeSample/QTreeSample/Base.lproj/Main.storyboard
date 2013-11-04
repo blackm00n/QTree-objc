@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="ufC-wZ-h7g">
+            <objects>
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Vte-y7-Beb"/>
+                        <viewControllerLayoutGuide type="bottom" id="h7h-IF-N2Y"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="MIi-uy-V7X">
+                                <rect key="frame" x="0.0" y="20" width="320" height="504"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="OSA-64-anw"/>
+                                </connections>
+                            </mapView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="BI4-5r-mhK">
+                                <rect key="frame" x="20" y="532" width="280" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="On"/>
+                                    <segment title="Off"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentChanged:" destination="vXZ-lx-hvc" eventType="valueChanged" id="PbW-Tc-twZ"/>
+                                </connections>
+                            </segmentedControl>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="BI4-5r-mhK" firstAttribute="top" secondItem="MIi-uy-V7X" secondAttribute="bottom" constant="8" symbolic="YES" id="JRV-Wb-Pqr"/>
+                            <constraint firstAttribute="trailing" secondItem="MIi-uy-V7X" secondAttribute="trailing" id="SXW-Fk-7EJ"/>
+                            <constraint firstItem="BI4-5r-mhK" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" symbolic="YES" id="Szz-gc-ez1"/>
+                            <constraint firstAttribute="trailing" secondItem="BI4-5r-mhK" secondAttribute="trailing" constant="20" symbolic="YES" id="VaT-bi-rds"/>
+                            <constraint firstItem="MIi-uy-V7X" firstAttribute="top" secondItem="Vte-y7-Beb" secondAttribute="bottom" id="WBx-dR-4Nf"/>
+                            <constraint firstItem="h7h-IF-N2Y" firstAttribute="top" secondItem="BI4-5r-mhK" secondAttribute="bottom" constant="20" symbolic="YES" id="kzq-tx-Jd5"/>
+                            <constraint firstItem="MIi-uy-V7X" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="mcB-1J-q4f"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="MIi-uy-V7X" id="Vsa-mn-hmN"/>
+                        <outlet property="segmentedControl" destination="BI4-5r-mhK" id="zCt-qQ-hM9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>
