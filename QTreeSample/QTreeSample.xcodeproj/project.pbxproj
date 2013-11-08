@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		539362711826EEE000A0DFEE /* libQTree.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF345C5DC9246E4A5A4A7254 /* libQTree.a */; };
+		53FCAD45182917EC0041EE12 /* QCluster+Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = AF34535EED97715F1790DCB3 /* QCluster+Annotation.m */; };
 		AF34506EDB65C48F8DC31E92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF345518D6ED1CE1E957F1D0 /* Main.storyboard */; };
 		AF345178CE544FA9731BC757 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3453A99B021F0804E08A51 /* AppDelegate.m */; };
 		AF3451EA3CF1A4370B32AF7C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF34545043D62A00C724EC89 /* ViewController.m */; };
 		AF3455DEC4AEADB5E72207C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF3458C01D9742437F7A78F6 /* Images.xcassets */; };
 		AF34572F1730F2DA2D0D594C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3459617E4B9CBDD78E5A73 /* main.m */; };
 		AF3457D2B236A778E88A1413 /* DummyAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = AF345C297F87A27863FB1DAD /* DummyAnnotation.m */; };
-		AF345889537F0857086B0423 /* QCluster+Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = AF34535EED97715F1790DCB3 /* QCluster+Annotation.m */; };
 		AF3459B9DEF58121C181846B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AF345F3CE9066F90D749F2D6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -215,11 +215,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53FCAD45182917EC0041EE12 /* QCluster+Annotation.m in Sources */,
 				AF34572F1730F2DA2D0D594C /* main.m in Sources */,
 				AF345178CE544FA9731BC757 /* AppDelegate.m in Sources */,
 				AF3451EA3CF1A4370B32AF7C /* ViewController.m in Sources */,
 				AF3457D2B236A778E88A1413 /* DummyAnnotation.m in Sources */,
-				AF345889537F0857086B0423 /* QCluster+Annotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +294,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QTreeSample/QTreeSample-Prefix.pch";
 				INFOPLIST_FILE = "QTreeSample/QTreeSample-Info.plist";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../QTree\"/**";
 				WRAPPER_EXTENSION = app;
@@ -347,6 +348,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QTreeSample/QTreeSample-Prefix.pch";
 				INFOPLIST_FILE = "QTreeSample/QTreeSample-Info.plist";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../QTree\"/**";
 				WRAPPER_EXTENSION = app;

@@ -61,18 +61,16 @@ inline static CLLocationDegrees degreesDispersion()
   }
   [self.mapView removeAnnotations:self.mapView.annotations];
   const MKCoordinateRegion mapRegion = self.mapView.region;
-  const CLLocationDegrees minNonClusteredSpan = MIN(mapRegion.span.latitudeDelta, mapRegion.span.longitudeDelta) / 5;
+  BOOL useClustering = (self.segmentedControl.selectedSegmentIndex == 0);
+  const CLLocationDegrees minNonClusteredSpan = useClustering ? MIN(mapRegion.span.latitudeDelta, mapRegion.span.longitudeDelta) / 5
+                                                              : 0;
   NSArray* objects = [self.qTree getObjectsInRegion:mapRegion minNonClusteredSpan:minNonClusteredSpan];
   [self.mapView addAnnotations:objects];
 }
 
 -(IBAction)segmentChanged:(id)sender
 {
-  if( self.segmentedControl.selectedSegmentIndex == 0 ) {
-
-  } else {
-
-  }
+  [self reloadAnnotations];
 }
 
 #pragma mark MKMapViewDelegate
