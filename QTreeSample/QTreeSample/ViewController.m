@@ -6,6 +6,8 @@
 #import "ViewController.h"
 #import "QTree.h"
 #import "DummyAnnotation.h"
+#import "QCluster.h"
+#import "ClusterAnnotationView.h"
 
 inline static CLLocationCoordinate2D referenceLocation()
 {
@@ -59,13 +61,22 @@ inline static CLLocationDegrees degreesDispersion()
   if( !self.isViewLoaded ) {
     return;
   }
-  [self.mapView removeAnnotations:self.mapView.annotations];
+
   const MKCoordinateRegion mapRegion = self.mapView.region;
   BOOL useClustering = (self.segmentedControl.selectedSegmentIndex == 0);
   const CLLocationDegrees minNonClusteredSpan = useClustering ? MIN(mapRegion.span.latitudeDelta, mapRegion.span.longitudeDelta) / 5
                                                               : 0;
   NSArray* objects = [self.qTree getObjectsInRegion:mapRegion minNonClusteredSpan:minNonClusteredSpan];
-  [self.mapView addAnnotations:objects];
+
+  NSMutableArray* annotationsToRemove = [self.mapView.annotations mutableCopy];
+  [annotationsToRemove removeObject:self.mapView.userLocation];
+  [annotationsToRemove removeObjectsInArray:objects];
+  [self.mapView removeAnnotations:annotationsToRemove];
+
+  NSMutableArray* annotationsToAdd = [objects mutableCopy];
+  [annotationsToAdd removeObjectsInArray:self.mapView.annotations];
+
+  [self.mapView addAnnotations:annotationsToAdd];
 }
 
 -(IBAction)segmentChanged:(id)sender
@@ -78,6 +89,30 @@ inline static CLLocationDegrees degreesDispersion()
 -(void)mapView:(MKMapView*)mapView regionDidChangeAnimated:(BOOL)animated
 {
   [self reloadAnnotations];
+}
+
+-(MKAnnotationView*)mapView:(MKMapView*)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+  if( [annotation isKindOfClass:[QCluster class]] ) {
+    ClusterAnnotationView* annotationView = (ClusterAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:[ClusterAnnotationView reuseId]];
+    if( !annotationView ) {
+      annotationView = [[ClusterAnnotationView alloc] initWithCluster:(QCluster*)annotation];
+    }
+    annotationView.cluster = (QCluster*)annotation;
+    return annotationView;
+  } else {
+    return nil;
+  }
+}
+
+-(void)mapView:(MKMapView*)mapView didSelectAnnotationView:(MKAnnotationView*)view
+{
+  id<MKAnnotation> annotation = view.annotation;
+  if( [annotation isKindOfClass:[QCluster class]] ) {
+    QCluster* cluster = (QCluster*)annotation;
+    [mapView setRegion:MKCoordinateRegionMake(cluster.coordinate, MKCoordinateSpanMake(2.5 * cluster.radius, 2.5 * cluster.radius))
+              animated:YES];
+  }
 }
 
 @end

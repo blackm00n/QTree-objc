@@ -12,6 +12,7 @@
 		AF34506EDB65C48F8DC31E92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF345518D6ED1CE1E957F1D0 /* Main.storyboard */; };
 		AF345178CE544FA9731BC757 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3453A99B021F0804E08A51 /* AppDelegate.m */; };
 		AF3451EA3CF1A4370B32AF7C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AF34545043D62A00C724EC89 /* ViewController.m */; };
+		AF345494258EAC0139FF940C /* ClusterAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = AF345F860E89AB83FAACF57F /* ClusterAnnotationView.m */; };
 		AF3455DEC4AEADB5E72207C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF3458C01D9742437F7A78F6 /* Images.xcassets */; };
 		AF34572F1730F2DA2D0D594C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3459617E4B9CBDD78E5A73 /* main.m */; };
 		AF3457D2B236A778E88A1413 /* DummyAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = AF345C297F87A27863FB1DAD /* DummyAnnotation.m */; };
@@ -52,12 +53,14 @@
 		AF3455EC96B053ADB6ACD86E /* QTreeSample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QTreeSample-Prefix.pch"; sourceTree = "<group>"; };
 		AF3456DE70A0359325160A51 /* QTreeSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QTreeSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF34572E2281B6B4057362A0 /* QTreeSample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = "QTreeSample-Info.plist"; sourceTree = "<group>"; };
+		AF3457350812DB204A0689FC /* ClusterAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClusterAnnotationView.h; sourceTree = "<group>"; };
 		AF3457962E672136135C215D /* DummyAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DummyAnnotation.h; sourceTree = "<group>"; };
 		AF3458C01D9742437F7A78F6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AF3459617E4B9CBDD78E5A73 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AF345A66BB92372A2FB9EC40 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AF345C297F87A27863FB1DAD /* DummyAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DummyAnnotation.m; sourceTree = "<group>"; };
 		AF345F11C8F9EE7A5C8BD511 /* QTree.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QTree.xcodeproj; path = ../QTree/QTree.xcodeproj; sourceTree = "<group>"; };
+		AF345F860E89AB83FAACF57F /* ClusterAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClusterAnnotationView.m; sourceTree = "<group>"; };
 		AF345FC9FF5F675E519EB801 /* QCluster+Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "QCluster+Annotation.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +127,8 @@
 				AF34535EED97715F1790DCB3 /* QCluster+Annotation.m */,
 				AF3453F036CCC3A0B5ADF59B /* ViewController.h */,
 				AF34545043D62A00C724EC89 /* ViewController.m */,
+				AF345F860E89AB83FAACF57F /* ClusterAnnotationView.m */,
+				AF3457350812DB204A0689FC /* ClusterAnnotationView.h */,
 			);
 			path = QTreeSample;
 			sourceTree = "<group>";
@@ -220,6 +225,7 @@
 				AF345178CE544FA9731BC757 /* AppDelegate.m in Sources */,
 				AF3451EA3CF1A4370B32AF7C /* ViewController.m in Sources */,
 				AF3457D2B236A778E88A1413 /* DummyAnnotation.m in Sources */,
+				AF345494258EAC0139FF940C /* ClusterAnnotationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
