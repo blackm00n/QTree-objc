@@ -20,8 +20,13 @@
 	if( !self ) {
     return nil;
   }
-	self.rootNode = [[QNode alloc] initWithRegion:MKCoordinateRegionForMapRect(MKMapRectWorld)];
+	[self cleanup];
 	return self;
+}
+
+- (void) cleanup
+{
+    self.rootNode = [[QNode alloc] initWithRegion:MKCoordinateRegionForMapRect(MKMapRectWorld)];
 }
 
 -(void)insertObject:(id<QTreeInsertable>)insertableObject
