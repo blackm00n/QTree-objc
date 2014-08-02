@@ -193,7 +193,10 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
 
       self.cachedCluster = cluster;
     }
-    [result addObject:self.cachedCluster];
+      
+    if (self.cachedCluster) {
+        [result addObject:self.cachedCluster];
+    }
   }
   return result;
 }
