@@ -34,6 +34,11 @@
   [self.rootNode insertObject:insertableObject];
 }
 
+-(void)removeObject:(id<QTreeInsertable>)insertableObject
+{
+  [self.rootNode removeObject:insertableObject];
+}
+
 -(NSUInteger)count
 {
   return self.rootNode.count;

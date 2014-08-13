@@ -9,6 +9,8 @@
 #import "QCluster.h"
 #import "ClusterAnnotationView.h"
 
+static NSInteger kMaxObjectsCount = 1000;
+
 inline static CLLocationCoordinate2D referenceLocation()
 {
   return CLLocationCoordinate2DMake(50, 14.42);
@@ -37,7 +39,7 @@ inline static CLLocationDegrees degreesDispersion()
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^
   {
     srand48(time(0));
-    for( NSUInteger i = 0; i < 1000; ++i ) {
+    for( NSUInteger i = 0; i < kMaxObjectsCount; ++i ) {
       DummyAnnotation* object = [DummyAnnotation new];
       object.coordinate = CLLocationCoordinate2DMake(referenceLocation().latitude + degreesDispersion() * (1 - 2 * drand48()),
                                                      referenceLocation().longitude + degreesDispersion() * (1 - 2 * drand48()));
@@ -112,6 +114,9 @@ inline static CLLocationDegrees degreesDispersion()
     QCluster* cluster = (QCluster*)annotation;
     [mapView setRegion:MKCoordinateRegionMake(cluster.coordinate, MKCoordinateSpanMake(2.5 * cluster.radius, 2.5 * cluster.radius))
               animated:YES];
+  } else {
+    [self.qTree removeObject:(id<QTreeInsertable>)annotation];
+    [self reloadAnnotations];
   }
 }
 

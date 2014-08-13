@@ -22,6 +22,7 @@
 @property(nonatomic, readonly) CLLocationDegrees centerLongitude;
 
 -(BOOL)insertObject:(id<QTreeInsertable>)insertableObject;
+-(BOOL)removeObject:(id<QTreeInsertable>)insertableObject;
 
 -(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span;
 // Returned array is sorted from the least to the most distant

@@ -118,14 +118,57 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
   }
 }
 
--(BOOL)insertLeadObject:(id<QTreeInsertable>)leadObject withSatellites:(NSSet*)satellites
+-(BOOL)removeObject:(id<QTreeInsertable>)insertableObject
 {
-  self.cachedCluster = nil;
+  if( self.leadObject ) {
+    if( [self.satellites containsObject:insertableObject] ) {
+      [self.satellites removeObject:insertableObject];
+      self.cachedCluster = nil;
+      self.count -= 1;
+      return YES;
+    } else if( [self.leadObject isEqual:insertableObject] ) {
+      self.leadObject = [self.satellites anyObject];
+      if( self.leadObject ) {
+        [self.satellites removeObject:self.leadObject];
+      } // else should delete this node then
+      self.cachedCluster = nil;
+      self.count -= 1;
+      return YES;
+    } else {
+      return NO;
+    }
+  }
 
+  QNode* __strong *pNode = [self childNodeForObject:insertableObject];
+
+  if( *pNode ) {
+    BOOL result = [*pNode removeObject:insertableObject];
+    if( result ) {
+      self.cachedCluster = nil;
+      self.count -= 1;
+      if( (*pNode).count == 0 ) {
+        *pNode = nil;
+      }
+      QNode* __strong *pChild = [self theOnlyChildNode];
+      if( pChild != nil && [(*pChild) isLeaf] ) {
+        self.leadObject = (*pChild).leadObject;
+        self.satellites = (*pChild).satellites;
+        NSAssert(self.count == (*pChild).count, @"Should be in sync already");
+        *pChild = nil;
+      }
+    }
+    return result;
+  } else {
+    return NO;
+  }
+}
+
+-(QNode* __strong *)childNodeForObject:(id<QTreeInsertable>)insertableObject
+{
   QNode* __strong *pNode = nil;
 
-  const BOOL down = leadObject.coordinate.latitude < self.centerLatitude;
-  const BOOL left = leadObject.coordinate.longitude < self.centerLongitude;
+  const BOOL down = insertableObject.coordinate.latitude < self.centerLatitude;
+  const BOOL left = insertableObject.coordinate.longitude < self.centerLongitude;
 
   if( down ) {
     if( left ) {
@@ -141,7 +184,55 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
     }
   }
 
+  return pNode;
+}
+
+// returns nil if there are more than one child
+-(QNode* __strong *)theOnlyChildNode
+{
+  QNode* __strong *pChild = nil;
+
+  while( YES ) {
+    if( self.upLeft ) {
+      pChild = &_upLeft;
+    }
+    if( self.downLeft ) {
+      if( pChild ) {
+        pChild = nil;
+        break;
+      }
+      pChild = &_downLeft;
+    }
+    if( self.upRight ) {
+      if( pChild ) {
+        pChild = nil;
+        break;
+      }
+      pChild = &_upRight;
+    }
+    if( self.downRight ) {
+      if( pChild ) {
+        pChild = nil;
+        break;
+      }
+      pChild = &_downRight;
+    }
+    break;
+  }
+
+  return pChild;
+}
+
+-(BOOL)insertLeadObject:(id<QTreeInsertable>)leadObject withSatellites:(NSSet*)satellites
+{
+  self.cachedCluster = nil;
+
+  QNode* __strong *pNode = [self childNodeForObject:leadObject];
+
   if( !*pNode ) {
+    const BOOL down = leadObject.coordinate.latitude < self.centerLatitude;
+    const BOOL left = leadObject.coordinate.longitude < self.centerLongitude;
+
     const CLLocationDegrees latDeltaBy2 = self.region.span.latitudeDelta / 2;
     const CLLocationDegrees newLat = self.centerLatitude + latDeltaBy2 * (down ? -1 : +1) / 2;
 

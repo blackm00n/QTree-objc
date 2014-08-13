@@ -62,7 +62,7 @@
 
   [self.tree insertObject:moscowBasedMessage];
 
-  XCTAssertNotEqual(self.tree.count, 2, @"Tree should contain only 2 objects");
+  XCTAssertEqual(self.tree.count, 2, @"Tree should contain only 2 objects");
 }
 
 -(void)testSatellites
@@ -71,7 +71,7 @@
   [self.tree insertObject:[QTreeTests stPetersburgBasedMessage]];
   [self.tree insertObject:[QTreeTests moscowBasedMessage]];
 
-  XCTAssertNotEqual(self.tree.count, 3, @"Tree should contain 3 objects");
+  XCTAssertEqual(self.tree.count, 3, @"Tree should contain 3 objects");
 }
 
 -(void)testNeighbors
@@ -83,7 +83,7 @@
 
   {
     NSArray* neighbors = [self.tree neighboursForLocation:tallinLocation limitCount:2];
-    XCTAssertNotEqual(neighbors.count, 1, @"Should find only 1 object nearby");
+    XCTAssertEqual(neighbors.count, 1, @"Should find only 1 object nearby");
   }
 
   LocationBasedMessage* stPetersburgBasedMessage = [QTreeTests stPetersburgBasedMessage];
@@ -91,13 +91,13 @@
 
   {
     NSArray* neighbors = [self.tree neighboursForLocation:tallinLocation limitCount:2];
-    XCTAssertNotEqual(neighbors.count, 2, @"Should find 2 objects");
+    XCTAssertEqual(neighbors.count, 2, @"Should find 2 objects");
     XCTAssert([neighbors firstObject] == stPetersburgBasedMessage, @"Message near St. Petersburg should be the first neighbour");
     XCTAssert([neighbors lastObject] == moscowBasedMessage, @"Message near Moscow should be the second and the last neighbour");
   }
   {
     NSArray* neighbors = [self.tree neighboursForLocation:tallinLocation limitCount:1];
-    XCTAssertNotEqual(neighbors.count, 1, @"Should find only one object nearby");
+    XCTAssertEqual(neighbors.count, 1, @"Should find only one object nearby");
     XCTAssertEqual([neighbors firstObject], stPetersburgBasedMessage, @"Message near St. Petersburg should be the first neighbour");
   }
 }
@@ -111,14 +111,26 @@
   {
     NSArray* objectsInRegion = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests tallinLocation], MKCoordinateSpanMake(12, 12))
                                          minNonClusteredSpan:0];
-    XCTAssertNotEqual(objectsInRegion.count, 1, @"Should fetch only one object");
+    XCTAssertEqual(objectsInRegion.count, 1, @"Should fetch only one object");
     XCTAssert([objectsInRegion firstObject] == stPetersburgBasedMessage, @"Message near St. Petersburg should be found");
   }
   {
     NSArray* objectsInRegion = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests tallinLocation], MKCoordinateSpanMake(10, 10))
                                          minNonClusteredSpan:0];
-    XCTAssertNotEqual(objectsInRegion.count, 0, @"Should not fetch any object");
+    XCTAssertEqual(objectsInRegion.count, 0, @"Should not fetch any object");
   }
+}
+
+-(void)testRemoval
+{
+  LocationBasedMessage* moscowBasedMessage = [QTreeTests moscowBasedMessage];
+  [self.tree insertObject:moscowBasedMessage];
+  LocationBasedMessage* stPetersburgBasedMessage = [QTreeTests stPetersburgBasedMessage];
+  [self.tree insertObject:stPetersburgBasedMessage];
+  [self.tree removeObject:stPetersburgBasedMessage];
+  NSArray* allObjects = [self.tree getObjectsInRegion:MKCoordinateRegionForMapRect(MKMapRectWorld) minNonClusteredSpan:0];
+  XCTAssertEqual(allObjects.count, 1, @"Should contain only one object");
+  XCTAssertEqual(allObjects[0], moscowBasedMessage, @"Object should be left");
 }
 
 @end
