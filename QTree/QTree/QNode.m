@@ -289,62 +289,19 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
   return result;
 }
 
--(NSArray*)neighboursForLocation:(CLLocationCoordinate2D)location limitCount:(NSUInteger)limit
+-(QNode*)childNodeForLocation:(CLLocationCoordinate2D)location
 {
-  NSArray* nodesPath = [self nodesPathForLocation:location];
-  for( QNode* node in nodesPath.reverseObjectEnumerator ) {
-    if( node.count < limit && node != [nodesPath firstObject] ) {
-      continue;
-    }
-    const CLLocationDegrees latitudeDelta = 2 * (node.region.span.latitudeDelta / 2 - fabs(node.region.center.latitude - location.latitude));
-    const CLLocationDegrees longitudeDelta = 2 * (node.region.span.longitudeDelta / 2 - fabs(node.region.center.longitude - location.longitude));
-    const MKCoordinateSpan span = MKCoordinateSpanMake(latitudeDelta, longitudeDelta);
-    NSMutableArray* objects = [[self getObjectsInRegion:MKCoordinateRegionMake(location, span) minNonClusteredSpan:0] mutableCopy];
-    if( objects.count < limit && node != [nodesPath firstObject] ) {
-      continue;
-    }
-    [objects sortUsingComparator:^NSComparisonResult(id<QTreeInsertable> obj1, id<QTreeInsertable> obj2)
-    {
-      CLLocationDistance m1 = CLMetersBetweenCoordinates(obj1.coordinate, location);
-      CLLocationDistance m2 = CLMetersBetweenCoordinates(obj2.coordinate, location);
-      if( m1 < m2 ) {
-        return NSOrderedAscending;
-      } else if( m1 > m2 ) {
-        return NSOrderedDescending;
-      } else {
-        return NSOrderedSame;
-      }
-    }];
-    return [objects subarrayWithRange:NSMakeRange(0, MIN(limit, objects.count))];
+  if( self.downRight && MKCoordinateRegionContainsCoordinate(self.downRight.region, location) ) {
+    return self.downRight;
+  } else if( self.downLeft && MKCoordinateRegionContainsCoordinate(self.downLeft.region, location) ) {
+    return self.downLeft;
+  } else if( self.upRight && MKCoordinateRegionContainsCoordinate(self.upRight.region, location) ) {
+    return self.upRight;
+  } else if( self.upLeft && MKCoordinateRegionContainsCoordinate(self.upLeft.region, location) ) {
+    return self.upLeft;
+  } else {
+    return nil;
   }
-  return @[];
-}
-
--(NSArray*)nodesPathForLocation:(CLLocationCoordinate2D)location
-{
-  if( !MKCoordinateRegionContainsCoordinate(self.region, location) ) {
-    return @[];
-  }
-  QNode* cur = self;
-  NSMutableArray* result = [NSMutableArray arrayWithObject:cur];
-  while( YES ) {
-    if( cur.downRight && MKCoordinateRegionContainsCoordinate(cur.downRight.region, location) ) {
-      [result addObject:cur.downRight];
-      cur = cur.downRight;
-    } else if( cur.downLeft && MKCoordinateRegionContainsCoordinate(cur.downLeft.region, location) ) {
-      [result addObject:cur.downLeft];
-      cur = cur.downLeft;
-    } else if( cur.upRight && MKCoordinateRegionContainsCoordinate(cur.upRight.region, location) ) {
-      [result addObject:cur.upRight];
-      cur = cur.upRight;
-    } else if( cur.upLeft && MKCoordinateRegionContainsCoordinate(cur.upLeft.region, location) ) {
-      [result addObject:cur.upLeft];
-      cur = cur.upLeft;
-    } else {
-      break;
-    }
-  }
-  return result;
 }
 
 @end

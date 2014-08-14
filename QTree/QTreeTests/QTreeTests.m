@@ -133,4 +133,14 @@
   XCTAssertEqual(allObjects[0], moscowBasedMessage, @"Object should be left");
 }
 
+-(void)testFarAwayFetch
+{
+  LocationBasedMessage* msg = [LocationBasedMessage new];
+  msg.message = @"reported by andjash";
+  msg.coordinate = CLLocationCoordinate2DMake(34.055938, -118.248386);
+  [self.tree insertObject:msg];
+  NSArray* fetchResult = [self.tree neighboursForLocation:CLLocationCoordinate2DMake(55.801854, 37.508097) limitCount:NSUIntegerMax];
+  XCTAssertEqual(fetchResult.count, 1, @"Number of fetched objects should be 1, but is %@", @(fetchResult.count));
+}
+
 @end
