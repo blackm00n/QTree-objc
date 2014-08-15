@@ -58,6 +58,7 @@
       continue;
     }
     MKCoordinateRegion region;
+    NSPredicate* predicate = nil;
     if( node == self.rootNode ) {
       region = node.region;
     } else {
@@ -65,8 +66,15 @@
       const CLLocationDegrees longitudeDelta = 2 * (node.region.span.longitudeDelta / 2 - fabs(node.region.center.longitude - location.longitude));
       const CLLocationDegrees delta = MIN(latitudeDelta, longitudeDelta);
       region = MKCoordinateRegionMake(location, MKCoordinateSpanMake(delta, delta));
+      predicate = [NSPredicate predicateWithBlock:^BOOL(id<QTreeInsertable> evaluatedObject, NSDictionary *bindings) {
+        const CLLocationDegrees distance = sqrt(pow(evaluatedObject.coordinate.latitude - location.latitude, 2) + pow(evaluatedObject.coordinate.longitude - location.longitude, 2));
+        return distance <= delta;
+      }];
     }
     NSMutableArray* objects = [[self getObjectsInRegion:region minNonClusteredSpan:0] mutableCopy];
+    if( predicate != nil ) {
+      [objects filterUsingPredicate:predicate];
+    }
     if( objects.count < limit && node != [nodesPath firstObject] ) {
       continue;
     }
