@@ -264,8 +264,12 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
   NSMutableArray* result = [NSMutableArray array];
   if( self.leadObject ) {
     if( MKCoordinateRegionContainsCoordinate(region, self.leadObject.coordinate) ) {
-      [result addObject:self.leadObject];
-      [result addObjectsFromArray:self.satellites.allObjects];
+      if ( span == 0 || self.count == 1 ) {
+        [result addObject:self.leadObject];
+        [result addObjectsFromArray:self.satellites.allObjects];
+      } else {
+        [result addObject:[self getCluster]];
+      }
     }
   } else if( MIN(self.region.span.latitudeDelta, self.region.span.longitudeDelta) >= span ) {
     [result addObjectsFromArray:[self.upLeft getObjectsInRegion:region minNonClusteredSpan:span]];
@@ -273,20 +277,25 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
     [result addObjectsFromArray:[self.downLeft getObjectsInRegion:region minNonClusteredSpan:span]];
     [result addObjectsFromArray:[self.downRight getObjectsInRegion:region minNonClusteredSpan:span]];
   } else {
-    if( !self.cachedCluster ) {
-      QCluster* cluster = [[QCluster alloc] init];
-
-      NSArray* allChildren = [self getObjectsInRegion:self.region minNonClusteredSpan:0];
-      CLLocationCoordinate2D meanCenter = MeanCoordinate(allChildren);
-      cluster.coordinate = meanCenter;
-      cluster.objectsCount = allChildren.count;
-      cluster.radius = CircumscribedDegreesRadius(allChildren, meanCenter);
-
-      self.cachedCluster = cluster;
-    }
-    [result addObject:self.cachedCluster];
+    [result addObject:[self getCluster]];
   }
   return result;
+}
+
+-(QCluster*)getCluster
+{
+  if( !self.cachedCluster ) {
+    QCluster* cluster = [[QCluster alloc] init];
+
+    NSArray* allChildren = [self getObjectsInRegion:self.region minNonClusteredSpan:0];
+    CLLocationCoordinate2D meanCenter = MeanCoordinate(allChildren);
+    cluster.coordinate = meanCenter;
+    cluster.objectsCount = allChildren.count;
+    cluster.radius = CircumscribedDegreesRadius(allChildren, meanCenter);
+
+    self.cachedCluster = cluster;
+  }
+  return self.cachedCluster;
 }
 
 -(QNode*)childNodeForLocation:(CLLocationCoordinate2D)location
