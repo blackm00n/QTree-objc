@@ -22,6 +22,11 @@
   return CLLocationCoordinate2DMake(59.43, 24.75);
 }
 
++(CLLocationCoordinate2D)gainesvilleLocation
+{
+  return CLLocationCoordinate2DMake(29.651997, 82.324992);
+}
+
 +(LocationBasedMessage*)moscowBasedMessage
 {
   const CLLocationCoordinate2D moscowLocation = CLLocationCoordinate2DMake(57.75, 37.62);
@@ -141,6 +146,35 @@
   [self.tree insertObject:msg];
   NSArray* fetchResult = [self.tree neighboursForLocation:CLLocationCoordinate2DMake(55.801854, 37.508097) limitCount:NSUIntegerMax];
   XCTAssertEqual(fetchResult.count, 1, @"Number of fetched objects should be 1, but is %@", @(fetchResult.count));
+}
+
+-(void)testSameLocationCluster
+{
+  LocationBasedMessage* msg = [LocationBasedMessage new];
+  msg.message = @"pull request #6 by salagadoola";
+  msg.coordinate = [QTreeTests gainesvilleLocation];
+
+  LocationBasedMessage* msg2 = [LocationBasedMessage new];
+  msg2.message = @"Gainesville";
+  msg2.coordinate = [QTreeTests gainesvilleLocation];
+
+  LocationBasedMessage* msg3 = [LocationBasedMessage new];
+  msg3.message = @"UF";
+  msg3.coordinate = [QTreeTests gainesvilleLocation];
+
+  [self.tree insertObject:msg];
+
+  NSArray* objectsInRegion = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1)) minNonClusteredSpan:0.01];
+  XCTAssert([[objectsInRegion firstObject] isKindOfClass:[LocationBasedMessage class]], @"When span is non-zero but only one object is in region that object should be returned, not cluster");
+
+  [self.tree insertObject:msg2];
+  [self.tree insertObject:msg3];
+
+  NSArray* objectsInRegionZeroSpan = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1)) minNonClusteredSpan:0];
+  XCTAssertEqual(objectsInRegionZeroSpan.count, 3, @"When span is 0 no clusters should be returned, but all 3 objects");
+
+  NSArray* objectsInRegionNonZeroSpan = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1)) minNonClusteredSpan:0.01];
+  XCTAssertEqual(objectsInRegionNonZeroSpan.count, 1, @"When span is non-zero just one cluster should be returned");
 }
 
 @end
