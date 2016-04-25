@@ -45,9 +45,14 @@
   return self.rootNode.count;
 }
 
+-(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span fillClusters:(BOOL)fillClusters
+{
+  return [self.rootNode getObjectsInRegion:region minNonClusteredSpan:span fillClusters:fillClusters];
+}
+
 -(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span
 {
-	return [self.rootNode getObjectsInRegion:region minNonClusteredSpan:span];
+	return [self.rootNode getObjectsInRegion:region minNonClusteredSpan:span fillClusters:NO];
 }
 
 -(NSArray*)neighboursForLocation:(CLLocationCoordinate2D)location limitCount:(NSUInteger)limit

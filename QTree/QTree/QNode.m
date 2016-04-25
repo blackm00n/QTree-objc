@@ -258,6 +258,11 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
 
 -(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span
 {
+  return [self getObjectsInRegion:region minNonClusteredSpan:span fillClusters:NO];
+}
+
+-(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span fillClusters:(BOOL)fillClusters
+{
   if( !MKCoordinateRegionIntersectsRegion(self.region, region) ) {
     return @[];
   }
@@ -268,21 +273,21 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
         [result addObject:self.leadObject];
         [result addObjectsFromArray:self.satellites.allObjects];
       } else {
-        [result addObject:[self getCluster]];
+        [result addObject:[self getCluster:fillClusters]];
       }
     }
   } else if( MIN(self.region.span.latitudeDelta, self.region.span.longitudeDelta) >= span ) {
-    [result addObjectsFromArray:[self.upLeft getObjectsInRegion:region minNonClusteredSpan:span]];
-    [result addObjectsFromArray:[self.upRight getObjectsInRegion:region minNonClusteredSpan:span]];
-    [result addObjectsFromArray:[self.downLeft getObjectsInRegion:region minNonClusteredSpan:span]];
-    [result addObjectsFromArray:[self.downRight getObjectsInRegion:region minNonClusteredSpan:span]];
+    [result addObjectsFromArray:[self.upLeft getObjectsInRegion:region minNonClusteredSpan:span fillClusters:fillClusters]];
+    [result addObjectsFromArray:[self.upRight getObjectsInRegion:region minNonClusteredSpan:span fillClusters:fillClusters]];
+    [result addObjectsFromArray:[self.downLeft getObjectsInRegion:region minNonClusteredSpan:span fillClusters:fillClusters]];
+    [result addObjectsFromArray:[self.downRight getObjectsInRegion:region minNonClusteredSpan:span fillClusters:fillClusters]];
   } else {
-    [result addObject:[self getCluster]];
+    [result addObject:[self getCluster:fillClusters]];
   }
   return result;
 }
 
--(QCluster*)getCluster
+-(QCluster*)getCluster:(BOOL)fillCluster
 {
   if( !self.cachedCluster ) {
     QCluster* cluster = [[QCluster alloc] init];
@@ -291,6 +296,9 @@ static CLLocationDegrees CircumscribedDegreesRadius(NSArray* insertableObjects, 
     CLLocationCoordinate2D meanCenter = MeanCoordinate(allChildren);
     cluster.coordinate = meanCenter;
     cluster.objectsCount = allChildren.count;
+    if( fillCluster ) {
+      cluster.objects = allChildren;
+    }
     cluster.radius = CircumscribedDegreesRadius(allChildren, meanCenter);
 
     self.cachedCluster = cluster;

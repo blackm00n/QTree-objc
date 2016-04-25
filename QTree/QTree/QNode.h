@@ -25,6 +25,7 @@
 -(BOOL)removeObject:(id<QTreeInsertable>)insertableObject;
 
 -(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span;
+-(NSArray*)getObjectsInRegion:(MKCoordinateRegion)region minNonClusteredSpan:(CLLocationDegrees)span fillClusters:(BOOL)fillClusters;
 
 -(QNode*)childNodeForLocation:(CLLocationCoordinate2D)location;
 

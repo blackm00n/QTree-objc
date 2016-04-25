@@ -12,5 +12,7 @@
 @property(nonatomic, assign) CLLocationCoordinate2D coordinate;
 @property(nonatomic, assign) NSInteger objectsCount;
 @property(nonatomic, assign) CLLocationDegrees radius;
+// By default this property is not filled in and is nil
+@property(nonatomic, copy) NSArray<id<QTreeInsertable>>* objects;
 
 @end

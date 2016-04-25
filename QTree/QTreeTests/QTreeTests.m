@@ -164,17 +164,49 @@
 
   [self.tree insertObject:msg];
 
-  NSArray* objectsInRegion = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1)) minNonClusteredSpan:0.01];
+  MKCoordinateRegion const region = MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1));
+
+  NSArray* objectsInRegion = [self.tree getObjectsInRegion:region minNonClusteredSpan:0.01];
   XCTAssert([[objectsInRegion firstObject] isKindOfClass:[LocationBasedMessage class]], @"When span is non-zero but only one object is in region that object should be returned, not cluster");
 
   [self.tree insertObject:msg2];
   [self.tree insertObject:msg3];
 
-  NSArray* objectsInRegionZeroSpan = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1)) minNonClusteredSpan:0];
+  NSArray* objectsInRegionZeroSpan = [self.tree getObjectsInRegion:region minNonClusteredSpan:0];
   XCTAssertEqual(objectsInRegionZeroSpan.count, 3, @"When span is 0 no clusters should be returned, but all 3 objects");
 
-  NSArray* objectsInRegionNonZeroSpan = [self.tree getObjectsInRegion:MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1)) minNonClusteredSpan:0.01];
-  XCTAssertEqual(objectsInRegionNonZeroSpan.count, 1, @"When span is non-zero just one cluster should be returned");
+  NSArray* objectsInRegionNonZeroSpan = [self.tree getObjectsInRegion:region minNonClusteredSpan:0.01];
+  XCTAssert(objectsInRegionNonZeroSpan.count == 1
+      && [objectsInRegionNonZeroSpan[0] isKindOfClass:[QCluster class]], @"When span is non-zero just one cluster should be returned");
+}
+
+- (void)testFetchClustersWithObjects
+{
+  LocationBasedMessage* msg = [LocationBasedMessage new];
+  msg.message = @"issue #7";
+  msg.coordinate = [QTreeTests gainesvilleLocation];
+
+  LocationBasedMessage* msg2 = [LocationBasedMessage new];
+  msg2.message = @"near Gainesville";
+  msg2.coordinate = [QTreeTests gainesvilleLocation];
+
+  LocationBasedMessage* msg3 = [LocationBasedMessage new];
+  msg3.message = @"near Gainesville 2";
+  msg3.coordinate = [QTreeTests gainesvilleLocation];
+
+  [self.tree insertObject:msg];
+  [self.tree insertObject:msg2];
+  [self.tree insertObject:msg3];
+
+  MKCoordinateRegion const region = MKCoordinateRegionMake([QTreeTests gainesvilleLocation], MKCoordinateSpanMake(1, 1));
+
+  NSArray* objectsInRegion = [self.tree getObjectsInRegion:region minNonClusteredSpan:0.01 fillClusters:YES];
+  XCTAssert(objectsInRegion.count == 1 && [objectsInRegion[0] isKindOfClass:[QCluster class]], @"Should get only 1 cluster");
+  XCTAssert([objectsInRegion[0] objects].count == 3
+      && [[objectsInRegion[0] objects] containsObject:msg]
+      && [[objectsInRegion[0] objects] containsObject:msg2]
+      && [[objectsInRegion[0] objects] containsObject:msg3], @"All 3 objects should be included in cluster");
+  
 }
 
 @end
